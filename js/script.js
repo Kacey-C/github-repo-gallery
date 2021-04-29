@@ -2,11 +2,14 @@
 const overviewElement = document.querySelector(".overview");
 const username = "Kacey-C";
 
+// Repos unordered list
+const repoListElement = document.querySelector(".repo-list");
+
 // ASYNC get user data
 const getUserInfo = async function () {
     const getInfo = await fetch (`https://api.github.com/users/${username}`);
     const data = await getInfo.json();
-    console.log(data);
+    //console.log(data);
     displayUserInfo(data);
 };
 getUserInfo();
@@ -26,4 +29,24 @@ const displayUserInfo = function(data) {
         <p><strong>Number of public repos:</strong> ${data.public_repos}</p>
     </div> `;
     overviewElement.append(userInfo);
+    getRepos();
+};
+
+// ASYNC to fetch repos
+const getRepos = async function() {
+    const getRepo = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
+    const repoData = await getRepo.json();
+    //console.log(repoData);
+    repoInfo(repoData);
+
+}; 
+
+// Display Repos
+const repoInfo = function(repos) {
+    for (const repo of repos) {
+        const repoItem = document.createElement("li");
+        repoItem.classList.add("repos");
+        repoItem.innerHTML = `<h3>${repo.name}</h3>`;
+        repoListElement.append(repoItem);
+    }
 };
